@@ -6,7 +6,7 @@ require conf/machine/include/arm/armv8a/tune-cortexa72.inc
 
 MACHINE_FEATURES += "ext3 pci usbgadget usbhost vfat keyboard network"
 
-BSP_XILINX_DERIVED:append = " xilinx-versal"
+BSP_XILINX_DERIVED:append = " amd-versal"
 
 KERNEL_IMAGETYPE = "Image"
 XILINX_DTB_FILES = " versal-vck190-rev1.1.dtb versal-vck190-rev1.1-x-ebm-01-revA.dtb \
@@ -17,8 +17,8 @@ KERNEL_DEVICETREE = "${@''.join('xilinx/%s ' % d for d in '${XILINX_DTB_FILES}'.
 SERIAL_CONSOLE = "115200 ttyPS0"
 
 PREFERRED_PROVIDER_virtual/kernel ??= "linux-yocto"
-PREFERRED_VERSION_linux-yocto ?= "6.1%"
-PREFERRED_VERSION_linux-yocto-rt ?= "6.1%"
+PREFERRED_VERSION_linux-yocto ?= "6.6%"
+PREFERRED_VERSION_linux-yocto-rt ?= "6.6%"
 
 MACHINE_EXTRA_RRECOMMENDS = " kernel-modules kernel-devicetree"
 IMAGE_FSTYPES += "tar.bz2 wic wic.bmap"

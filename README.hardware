@@ -1,4 +1,4 @@
-		Xilinx Versal Board Support Package
+		AMD Versal Board Support Package
 
 
 Table of Contents
@@ -15,8 +15,8 @@ Table of Contents
 
 This BSP supports the following boards:
 
-  + Xilinx Versal VCK190 REV 1.0/1.1
-  + Xilinx Versal VMK180 REV 1.0/1.1
+  + AMD Versal VCK190 REV 1.0/1.1
+  + AMD Versal VMK180 REV 1.0/1.1
 
 
 2. Change History

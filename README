@@ -1,4 +1,4 @@
-        Xilinx Versal Boards
+        AMD Versal Boards
 
 
 1. About this document
@@ -32,7 +32,7 @@ This layer and wrlinux layer should be added to bblayers.conf.
 
 License
 -------
-Copyright (C) 2023 Wind River Systems, Inc.
+Copyright (C) 2024 Wind River Systems, Inc.
 
 Source code included in the tree for individual recipes is under the LICENSE
 stated in the associated recipe (.bb file) unless otherwise stated.
@@ -115,7 +115,7 @@ properly to ensure your network is available from the board.
 4.1.1 Setup configuration your NFS TFTP server, and deploy the rootfs tarball
 -----------------------------------------------------------------------------
 
-	# sudo tar jxf wrlinux-image-std-xilinx-versal.tar.bz2 -C path_to_rootfs
+	# sudo tar jxf wrlinux-image-std-amd-versal.tar.bz2 -C path_to_rootfs
 
 4.1.2 Set the u-boot environment variables and boot from NFS
 ------------------------------------------------------------
@@ -147,7 +147,7 @@ IMAGE_BOOT_FILES:append = " /< path-to-BOOT.BIN >/BOOT.BIN;BOOT.BIN"
 After having built your project, a partitioned WIC image will be created in the
 deploy folder as follows:
 
-  path_to_your_project/build/tmp-glibc/deploy/images/xilinx-versal/wrlinux-image-<rootfs_type>-xilinx-versal.wic
+  path_to_your_project/build/tmp-glibc/deploy/images/amd-versal/wrlinux-image-<rootfs_type>-amd-versal.wic
 
 There are two partitions in this WIC images, the first one is to hold the boot
 images(including kernel/dtb/BOOT.BIN), the second is the related root file system.
@@ -183,7 +183,7 @@ _EOF
 
 After building project, a partitioned WIC image will be created in the deploy folder as follows:
 
-  path_to_your_project/build/tmp-glibc/deploy/images/xilinx-versal/wrlinux-image-<rootfs_type>-xilinx-versal.wic
+  path_to_your_project/build/tmp-glibc/deploy/images/amd-versal/wrlinux-image-<rootfs_type>-amd-versal.wic
 
 5.3 Boot the board from the WIC SD card
 ---------------------------------------
@@ -206,7 +206,7 @@ Board can boot automatically by set the below uboot environment variables:
 ===================
 
 You need to add feature/kexec support as follow:
-	./wrlinux-x/setup.sh --machines xilinx-versal --templates feature/kexec,feature/kdump
+	./wrlinux-x/setup.sh --machines amd-versal --templates feature/kexec,feature/kdump
 
 6.1 kexec
 ---------
@@ -242,7 +242,7 @@ the X-EBM-01 card is installed on J212 of the VCK190 board. And should use the s
 file versal-vck190-rev1.1-x-ebm-01-revA.dtb for vck190 board or versal-vmk180-rev1.1-x-ebm-01-revA.dtb
 for vmk180 board which can be found at the path:
 
-path_to_your_project/build/tmp-glibc/deploy/images/xilinx-versal/
+path_to_your_project/build/tmp-glibc/deploy/images/amd-versal/
 
 7.3 CANFD
 ---------
@@ -291,23 +291,23 @@ by using "fdt" u-boot command. The example for USB device mode is as described b
 
 Use the below example settings for configuring USB as MASS STORAGE profile to verify the device mode:
 
-	root@xilinx-versal:~#dd if=/dev/zero of=/tmp/mydev count=500 bs=1M
-	root@xilinx-versal:~#cd /sys/kernel/config/usb_gadget
-	root@xilinx-versal:~#mkdir g1
-	root@xilinx-versal:~#cd g1
-	root@xilinx-versal:~#echo "64" > bMaxPacketSize0
-	root@xilinx-versal:~#echo "0x200" > bcdUSB
-	root@xilinx-versal:~#echo "0x100" > bcdDevice
-	root@xilinx-versal:~#echo "0x03FD" > idVendor
-	root@xilinx-versal:~#echo "0x0501" > idProduct
-	root@xilinx-versal:~#cat max_speed
-	root@xilinx-versal:~#echo "high-speed" > max_speed
-	root@xilinx-versal:~#mkdir functions/mass_storage.ms0
-	root@xilinx-versal:~#mkdir configs/c1.1
-	root@xilinx-versal:~#echo /tmp/mydev > functions/mass_storage.ms0/lun.0/file
-	root@xilinx-versal:~#echo 1 > functions/mass_storage.ms0/lun.0/removable
-	root@xilinx-versal:~#ln -s functions/mass_storage.ms0/ configs/c1.1/
-	root@xilinx-versal:~#echo "fe200000.usb" > UDC
+	root@amd-versal:~#dd if=/dev/zero of=/tmp/mydev count=500 bs=1M
+	root@amd-versal:~#cd /sys/kernel/config/usb_gadget
+	root@amd-versal:~#mkdir g1
+	root@amd-versal:~#cd g1
+	root@amd-versal:~#echo "64" > bMaxPacketSize0
+	root@amd-versal:~#echo "0x200" > bcdUSB
+	root@amd-versal:~#echo "0x100" > bcdDevice
+	root@amd-versal:~#echo "0x03FD" > idVendor
+	root@amd-versal:~#echo "0x0501" > idProduct
+	root@amd-versal:~#cat max_speed
+	root@amd-versal:~#echo "high-speed" > max_speed
+	root@amd-versal:~#mkdir functions/mass_storage.ms0
+	root@amd-versal:~#mkdir configs/c1.1
+	root@amd-versal:~#echo /tmp/mydev > functions/mass_storage.ms0/lun.0/file
+	root@amd-versal:~#echo 1 > functions/mass_storage.ms0/lun.0/removable
+	root@amd-versal:~#ln -s functions/mass_storage.ms0/ configs/c1.1/
+	root@amd-versal:~#echo "fe200000.usb" > UDC
 
 Connect the cable from board to Windows or Linux host machine, and the mass storage device
 can be observed.
