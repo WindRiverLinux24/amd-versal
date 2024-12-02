@@ -26,7 +26,7 @@ information on submitting changes.
 
 
 Building the versal layer
------------------------------
+-------------------------
 This layer and wrlinux layer should be added to bblayers.conf.
 
 
@@ -133,66 +133,27 @@ information about WIC:
 
 https://docs.yoctoproject.org/singleindex.html#creating-partitioned-images-using-wic
 
-5.1 Build a WIC image within prebuilt BOOT.BIN
-----------------------------------------------
+This BSP supports disk images for SD card.
+After building the project, user will get a WIC image under the directory
+tmp-glibc/deploy/images/<bsp name>/, such as:
 
-BOOT.BIN is the bootloader for vmk180/vck190 boards. It can be downloaded from the website:
+	<path_to_your_project>/tmp-glibc/deploy/images/amd-versal/wrlinux-image-<rootfs_type>-amd-versal.rootfs.wic
 
-https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/18842316/Linux+Prebuilt+Images
+NOTE: The WIC image built in WRLinux don't contain the bootloader BOOT.BIN
+by default. Please refer to section 6 for the detailed description to create
+a bootable WIC image.
 
-and then add one line below to local.conf:
+5.1 Burn images to SD card
+--------------------------
 
-IMAGE_BOOT_FILES:append = " /< path-to-BOOT.BIN >/BOOT.BIN;BOOT.BIN"
+To burn WIC image to SD card, user only need to execute the below command:
 
-After having built your project, a partitioned WIC image will be created in the
-deploy folder as follows:
+	# dd if=wrlinux-image-<rootfs_type>-amd-versal.rootfs.wic of=/dev/your_sd_dev
 
-  path_to_your_project/build/tmp-glibc/deploy/images/amd-versal/wrlinux-image-<rootfs_type>-amd-versal.wic
-
-There are two partitions in this WIC images, the first one is to hold the boot
-images(including kernel/dtb/BOOT.BIN), the second is the related root file system.
-
-5.2 Build a bootable WIC image
-------------------------------
-Besides the above method which uses prebuilt BOOT.BIN, WRLinux can build BOOT.BIN and
-create a bootable WIC image by following the steps as below:
-
-     $ cd path_of_project
-     $ . ./environment-setup-x86_64-wrlinuxsdk-linux
-     $ . ./oe-init-build-env
-     $ cat << _EOF >> conf/local.conf
-CUSTOMER_RECIPES:xilinx += 'bootgen'
-CUSTOMER_RECIPES:xilinx += 'u-boot-xlnx-scr'
-CUSTOMER_RECIPES:xilinx += 'xilinx-bootbin'
-CUSTOMER_RECIPES:xilinx += 'psmfw'
-CUSTOMER_RECIPES:xilinx += 'plmfw'
-CUSTOMER_RECIPES:xilinx += 'base-pdi'
-CUSTOMER_RECIPES:xilinx += 'arm-trusted-firmware'
-CUSTOMER_RECIPES:xilinx += 'device-tree'
-CUSTOMER_RECIPES:xilinx-tools += 'external-hdf'
-CUSTOMER_RECIPES:virtualization-layer += 'python3-dtc'
-CUSTOMER_RECIPES:xilinx-standalone += 'psm-firmware'
-CUSTOMER_RECIPES:xilinx-standalone += 'plm-firmware'
-BB_NO_NETWORK = '0'
-IMAGE_BOOT_FILES:append = " \${DEPLOY_DIR_IMAGE}/boot.bin;BOOT.BIN"
-IMAGE_INSTALL:append = " xilinx-bootbin"
-HDF_MACHINE = "vmk180-versal" or HDF_MACHINE = "vck190-versal"
-YAML_DT_BOARD_FLAGS = "{BOARD versal-vmk180-reva-x-ebm-01-reva}" or YAML_DT_BOARD_FLAGS = "{BOARD versal-vck190-reva-x-ebm-01-reva}"
-_EOF
-     $ bitbake wrlinux-image-std
-
-After building project, a partitioned WIC image will be created in the deploy folder as follows:
-
-  path_to_your_project/build/tmp-glibc/deploy/images/amd-versal/wrlinux-image-<rootfs_type>-amd-versal.wic
-
-5.3 Boot the board from the WIC SD card
+5.2 Boot the board from the WIC SD card
 ---------------------------------------
 
-Insert the SD card into the board and power on, then set the proper u-boot
-environment parameters to boot the board, please refer to section 4 for more
-information.
-
-Board can boot automatically by set the below uboot environment variables:
+The board can boot automatically by setting the following uboot environment variables:
 
 => setenv bootfile Image; setenv fdtfile dtb-file-name; setenv loadaddr 0x10000000; setenv fdtaddr 0x18800000;
 
@@ -202,29 +163,93 @@ Board can boot automatically by set the below uboot environment variables:
 
 => saveenv; run bootcmd;
 
-6. kexec and kdump
-===================
+
+6. Features
+===========
+
+6.1 Bootloader
+--------------
+
+BOOT.BIN is the bootloader for vmk180/vck190 boards. There are two ways to generate BOOT.BIN.
+
+6.1.1 Generate BOOT.BIN with prebuilt firmwares
+-----------------------------------------------
+
+Run the following steps to generate BOOT.BIN, here we take vmk180 for instance, if the BOOT.BIN
+is for vck190 board, please substitute vck190-versal for vmk180-versal:
+
+	$ git clone https://github.com/Xilinx/soc-prebuilt-firmware.git
+	$ cd soc-prebuilt-firmware
+	$ git checkout xlnx_rel_v2024.2
+	$ cd vmk180-versal
+	$ source <path_to_Vivado>/2024.2/settings64.sh
+	$ bootgen -arch versal -image bootgen.bif -o ./BOOT.BIN -w
+
+And the BOOT.BIN can be installed into the WIC image:
+
+	$ cd path_of_project
+	$ . ./environment-setup-x86_64-wrlinuxsdk-linux
+	$ . ./oe-init-build-env
+	$ cat << _EOF >> conf/local.conf
+IMAGE_BOOT_FILES:append = " /< path-to-BOOT.BIN >/BOOT.BIN;BOOT.BIN"
+_EOF
+	$ bitbake wrlinux-image-std
+
+6.1.2 Build BOOT.BIN in WRLinux
+-------------------------------
+Besides the above method which uses prebuilt firmwares to generate BOOT.BIN,
+WRLinux can build BOOT.BIN and create a bootable WIC image by following the
+steps as below:
+
+	$ cd path_of_project
+	$ . ./environment-setup-x86_64-wrlinuxsdk-linux
+	$ . ./oe-init-build-env
+	$ cat << _EOF >> conf/local.conf
+CUSTOMER_RECIPES:xilinx += 'bootgen'
+CUSTOMER_RECIPES:xilinx += 'u-boot-xlnx-scr'
+CUSTOMER_RECIPES:xilinx += 'u-boot-xlnx'
+CUSTOMER_RECIPES:xilinx += 'xilinx-bootbin'
+CUSTOMER_RECIPES:xilinx += 'psmfw'
+CUSTOMER_RECIPES:xilinx += 'plmfw'
+CUSTOMER_RECIPES:xilinx += 'base-pdi'
+CUSTOMER_RECIPES:xilinx += 'extract-cdo'
+CUSTOMER_RECIPES:xilinx += 'trusted-firmware-a'
+CUSTOMER_RECIPES:xilinx += 'device-tree'
+CUSTOMER_RECIPES:xilinx-tools += 'external-hdf'
+CUSTOMER_RECIPES:xilinx-standalone += 'psm-firmware'
+CUSTOMER_RECIPES:xilinx-standalone += 'plm-firmware'
+CUSTOMER_RECIPES:xilinx += 'u-boot-tools-xlnx'
+PREFERRED_PROVIDER_u-boot-tools-native = "u-boot-tools-xlnx-native"
+CUSTOMER_RECIPES:xilinx-tools += 'xsct'
+BB_NO_NETWORK = '0'
+WRL_VERSAL_BOOTBIN_TARGET = "vmk180" or WRL_VERSAL_BOOTBIN_TARGET = "vck190"
+_EOF
+	$ bitbake wrlinux-image-std
+
+After building project, a partitioned WIC image will be created in the deploy folder as follows:
+
+  path_to_your_project/build/tmp-glibc/deploy/images/amd-versal/wrlinux-image-<rootfs_type>-amd-versal.wic
+
+6.2 kexec and kdump
+-------------------
 
 You need to add feature/kexec support as follow:
 	./wrlinux-x/setup.sh --machines amd-versal --templates feature/kexec,feature/kdump
 
-6.1 kexec
----------
+6.2.1 kexec
+-----------
 
 	kexec -l  /boot/Image --append="`cat /proc/cmdline`"
 	kexec -e
 
-6.2 kdump
----------
+6.2.2 kdump
+-----------
 
 Add crashkernel=512M to the kernel cmdline
-   kexec -p /boot/Image --append="$your-bootcmd"
-   echo c > /proc/sysrq-trigger
+	kexec -p /boot/Image --append="$your-bootcmd"
+	echo c > /proc/sysrq-trigger
 
-7. Features
-===========
-
-7.1 System Monitor
+6.3 System Monitor
 ------------------
 
 System monitor includes PL monitor and PS monitor.
@@ -234,7 +259,7 @@ to other parts of the system including the PMU, RPU, and APU processors.
 Customer could check the detail system monitor interfaces with below command:
 	# ls -la /sys/bus/iio/devices/iio:device0
 
-7.2 QSPI
+6.4 QSPI
 --------
 
 There are QSPI NOR Flash at the X-EBM-01 QSPI external daughter card, please make sure that
@@ -244,7 +269,7 @@ for vmk180 board which can be found at the path:
 
 path_to_your_project/build/tmp-glibc/deploy/images/amd-versal/
 
-7.3 CANFD
+6.5 CANFD
 ---------
 
 There is one canfd device interface J5 at board. Connect the canfd interfaces of 2 boards and use
@@ -263,19 +288,19 @@ VCK190/VMK180 board-2:
 
 If can0 at board-1 can dump data from board-2, CANFD feature works fine.
 
-7.4 USB
+6.6 USB
 -------
 
 For VMK180/VCK190 board, the USB controller can be configured as host, device modes.
 
-7.4.1 USB Host
+6.6.1 USB Host
 --------------
 
 For Host mode, short the jumper 1-2 of J308:
 	J308
 	1-2 3
 
-7.4.2 USB Device
+6.6.2 USB Device
 ----------------
 
 For Device mode, open the jumper 1-2 of J308:
