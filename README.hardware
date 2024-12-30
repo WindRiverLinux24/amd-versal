@@ -61,8 +61,8 @@ the corresponding h/w features exist.
 	+ LPD DMA
 	+ System Monitor
 
-3.2 Patch integrated and Unsupported Features
----------------------------------------------
+3.2 Unsupported Features
+------------------------
 
 The following features are not supported and not validated:
 
@@ -72,7 +72,7 @@ The following features are not supported and not validated:
   x Cadence TTC
   x Suspend-To-RAM
   x TCA6416
-  x CPU IDLE: WFI mode
+  x CPU IDLE
   x Two HDMI ports
   x 1x2 zSFP/SFP+ connector
   x 1 zQSFP connector
@@ -80,12 +80,6 @@ The following features are not supported and not validated:
   x FPGA Mezzanine Card Interface
   x 8-lane PCIe edge connector
   x Cadence I2C (i2c@ff020000)
-
-Most of these features are not validated since they need a special TRD firmware
-bootloader with the related PL bitstream, generally speaking, you can download
-the specific Xilinx xapp from the vendor website with your Xilinx account.
-
-Please refer to BSP notes for more information.
 
 4. BSP Notes
 ============

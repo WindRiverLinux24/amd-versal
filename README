@@ -170,13 +170,13 @@ The board can boot automatically by setting the following uboot environment vari
 6.1 Bootloader
 --------------
 
-BOOT.BIN is the bootloader for vmk180/vck190 boards. There are two ways to generate BOOT.BIN.
+BOOT.BIN is the bootloader for VMK180/VCK190 boards. There are two ways to generate BOOT.BIN.
 
 6.1.1 Generate BOOT.BIN with prebuilt firmwares
 -----------------------------------------------
 
-Run the following steps to generate BOOT.BIN, here we take vmk180 for instance, if the BOOT.BIN
-is for vck190 board, please substitute vck190-versal for vmk180-versal:
+Run the following steps to generate BOOT.BIN, here we take VMK180 for instance, if the BOOT.BIN
+is for VCK190 board, please substitute vck190-versal for vmk180-versal:
 
 	$ git clone https://github.com/Xilinx/soc-prebuilt-firmware.git
 	$ cd soc-prebuilt-firmware
@@ -263,9 +263,9 @@ Customer could check the detail system monitor interfaces with below command:
 --------
 
 There are QSPI NOR Flash at the X-EBM-01 QSPI external daughter card, please make sure that
-the X-EBM-01 card is installed on J212 of the VCK190 board. And should use the specific dtb
+the X-EBM-01 card is installed on J212 of the VCK190/VMK180 boards. And should use the specific dtb
 file versal-vck190-rev1.1-x-ebm-01-revA.dtb for vck190 board or versal-vmk180-rev1.1-x-ebm-01-revA.dtb
-for vmk180 board which can be found at the path:
+for VMK180 board which can be found at the path:
 
 path_to_your_project/build/tmp-glibc/deploy/images/amd-versal/
 
