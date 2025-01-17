@@ -15,6 +15,7 @@ Table of Contents
 
 This BSP supports the following boards:
 
+  + AMD Versal VCK190 REV 1.0/1.1
   + AMD Versal VMK180 REV 1.0/1.1
 
 
@@ -22,6 +23,8 @@ This BSP supports the following boards:
 =================
 
   - 2025/01 (LINUXPG-2478): Wind River Linux LTS24 RCPL5: Add BSP support for Versal VMK180 based on
+			   Xilinx SDK 2024.02
+  - 2025/02 (LINUXPG-2479): Wind River Linux LTS24 RCPL6: Add BSP support for Versal VCK190 based on
 			   Xilinx SDK 2024.02
 
 3. BSP Features
@@ -89,6 +92,12 @@ The following features are not supported and not validated:
 
 This BSP is only validated in following environment. If you use this BSP
 in a different environment it may possibly have some issues.
+
+VCK190:
+	Processor:              Versal VC1902
+	Board Revision:	        EK-VCK190-G-ED
+	BootLoader:             U-Boot
+	BootLoader Version:     U-Boot 2024.01
 
 VMK180:
 	Processor:              Versal VM1802
