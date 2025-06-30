@@ -218,6 +218,7 @@ CUSTOMER_RECIPES:xilinx += 'device-tree'
 CUSTOMER_RECIPES:xilinx-tools += 'external-hdf'
 CUSTOMER_RECIPES:xilinx-standalone += 'psm-firmware'
 CUSTOMER_RECIPES:xilinx-standalone += 'plm-firmware'
+CUSTOMER_RECIPES:xilinx-standalone += 'embeddedsw-source'
 CUSTOMER_RECIPES:xilinx += 'u-boot-tools-xlnx'
 PREFERRED_PROVIDER_u-boot-tools-native = "u-boot-tools-xlnx-native"
 CUSTOMER_RECIPES:xilinx-tools += 'xsct'
